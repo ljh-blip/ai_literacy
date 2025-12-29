@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>중학교 정보 교원 연수 | 왜 지금, AI 리터러시인가 (30분)</title>
+  <meta name="description" content="중학교 정보 교원 대상 AI 리터러시 중요성 30분 연수 슬라이드 (코들 활용법 연수 전)" />
+  <style>
+    :root{
+      --bg:#f7f7fb;
+      --paper:#ffffff;
+      --ink:#0f172a;
+      --muted:#475569;
+      --line:#e5e7eb;
+      --shadow: 0 18px 40px rgba(15, 23, 42, .10);
+      --shadow2: 0 8px 18px rgba(15, 23, 42, .08);
+      --radius: 22px;
+
+      --a:#2563eb;   /* blue */
+      --b:#10b981;   /* green */
+      --c:#f59e0b;   /* amber */
+      --d:#ef4444;   /* red */
+
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background: var(--bg);
+      overflow:hidden;
+    }
+
+    /* playful blobs */
+    body::before, body::after{
+      content:"";
+      position: fixed;
+      width: 560px;
+      height: 560px;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: .55;
+      z-index: -1;
+      pointer-events:none;
+    }
+    body::before{
+      left: -180px; top: -220px;
+      background: radial-gradient(circle at 30% 30%, rgba(37,99,235,.28), transparent 60%),
+                  radial-gradient(circle at 70% 60%, rgba(16,185,129,.22), transparent 62%);
+    }
+    body::after{
+      right: -220px; bottom: -240px;
+      background: radial-gradient(circle at 35% 35%, rgba(245,158,11,.26), transparent 60%),
+                  radial-gradient(circle at 65% 65%, rgba(239,68,68,.18), transparent 62%);
+    }
+
+    /* Top bar */
+    header{
+      position:fixed; inset:0 0 auto 0;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px;
+      border-bottom:1px solid var(--line);
+      background: rgba(255,255,255,.84);
+      backdrop-filter: blur(10px);
+      z-index:50;
+    }
+    header .left, header .right{
+      display:flex; align-items:center; gap:10px;
+      min-width: 220px;
+    }
+    header .center{
+      display:flex; align-items:center; gap:10px;
+      justify-content:center;
+      flex:1;
+      min-width: 0;
+    }
+
+    .badge{
+      font-size:12px;
+      padding:7px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(255,255,255,.92);
+      white-space:nowrap;
+      box-shadow: 0 1px 0 rgba(15,23,42,.02);
+    }
+    .badge strong{color:var(--ink); font-weight:800}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px dashed rgba(37,99,235,.35);
+      background: rgba(37,99,235,.06);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+      padding:9px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-size: 13px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      box-shadow: 0 2px 0 rgba(15,23,42,.03);
+    }
+    .btn:hover{box-shadow: var(--shadow2)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      border-color: rgba(37,99,235,.35);
+      background: rgba(37,99,235,.10);
+    }
+    .btn.primary:hover{background: rgba(37,99,235,.14)}
+    .k{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      border:1px solid var(--line);
+      background: rgba(2,6,23,.02);
+      padding:2px 6px;
+      border-radius:10px;
+    }
+
+    /* Progress */
+    .progress{
+      position: fixed;
+      inset: auto 0 0 0;
+      height: 6px;
+      background: rgba(2,6,23,.06);
+      z-index: 60;
+    }
+    .progress > div{
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--a), var(--b), var(--c));
+      transition: width .25s ease;
+    }
+
+    /* Slides */
+    main{
+      position: relative;
+      height: 100%;
+      padding-top: 64px;
+      padding-bottom: 18px;
+    }
+    .deck{
+      height: calc(100% - 18px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+    }
+    .slide{
+      width: min(1100px, 96vw);
+      height: min(640px, 78vh);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 34px 40px;
+      display:none;
+      position: relative;
+      overflow:hidden;
+    }
+    .slide.active{display:block; animation: pop .18s ease}
+    @keyframes pop {from{transform: scale(.99); opacity:.0} to{transform: scale(1); opacity:1}}
+
+    /* confetti corners */
+    .slide::before, .slide::after{
+      content:"";
+      position:absolute;
+      width: 220px; height: 220px;
+      border-radius: 36px;
+      opacity: .35;
+      pointer-events:none;
+      filter: blur(0px);
+      background:
+        radial-gradient(circle at 20% 25%, rgba(37,99,235,.35) 0 18%, transparent 19%),
+        radial-gradient(circle at 55% 30%, rgba(16,185,129,.28) 0 16%, transparent 17%),
+        radial-gradient(circle at 35% 65%, rgba(245,158,11,.30) 0 14%, transparent 15%),
+        radial-gradient(circle at 70% 70%, rgba(239,68,68,.22) 0 12%, transparent 13%);
+    }
+    .slide::before{left:-90px; top:-90px; transform: rotate(10deg)}
+    .slide::after{right:-100px; bottom:-100px; transform: rotate(-12deg)}
+
+    .meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(2,6,23,.02);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .chip b{color:var(--ink)}
+    h1{
+      margin: 0 0 12px 0;
+      font-size: 44px;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+    }
+    h2{
+      margin: 0 0 12px 0;
+      font-size: 34px;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+    }
+    h3{
+      margin: 18px 0 8px;
+      font-size: 20px;
+    }
+    .sub{
+      margin: 0 0 18px 0;
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 72ch;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .two-col{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 6px;
+    }
+    .card{
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px 16px;
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 2px 0 rgba(15,23,42,.03);
+    }
+
+    .tag{
+      display:inline-block;
+      font-size: 12px;
+      letter-spacing: .02em;
+      font-family: var(--mono);
+      color: rgba(15,23,42,.70);
+      padding: 4px 9px;
+      border-radius: 999px;
+      border:1px dashed var(--line);
+      background: rgba(2,6,23,.02);
+      margin-bottom: 6px;
+    }
+
+    ul{
+      margin: 10px 0 0 18px;
+      padding: 0;
+      line-height: 1.65;
+      font-size: 18px;
+    }
+    li{margin: 8px 0}
+    b{font-weight: 850}
+
+    .quote{
+      margin-top: 14px;
+      padding: 14px 14px;
+      border: 1px solid rgba(37,99,235,.20);
+      background: rgba(37,99,235,.06);
+      border-radius: 16px;
+      font-size: 20px;
+      line-height: 1.5;
+      max-width: 80ch;
+    }
+    .callout{
+      border-color: rgba(245,158,11,.30);
+      background: rgba(245,158,11,.08);
+    }
+    .danger{
+      border-color: rgba(239,68,68,.30);
+      background: rgba(239,68,68,.07);
+    }
+    .accent{
+      border-color: rgba(16,185,129,.30);
+      background: rgba(16,185,129,.07);
+    }
+
+    .pills{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .pills .chip{font-size: 13px}
+
+    .steps{
+      counter-reset: step;
+      display:grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .step{
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(2,6,23,.02);
+      font-size: 18px;
+      line-height: 1.55;
+    }
+    .step::before{
+      counter-increment: step;
+      content: counter(step);
+      width: 34px; height: 34px;
+      flex: 0 0 34px;
+      display:grid; place-items:center;
+      border-radius: 12px;
+      background: rgba(37,99,235,.12);
+      border:1px solid rgba(37,99,235,.20);
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    /* Footer hints */
+    .hints{
+      position:absolute;
+      inset:auto 18px 14px 18px;
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      color: rgba(15,23,42,.62);
+      font-size: 13px;
+    }
+    .hints .left, .hints .right{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+
+    /* Modal */
+    dialog{
+      width: min(900px, 96vw);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.98);
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    dialog::backdrop{background: rgba(2,6,23,.22)}
+    .modal-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .modal-head h3{margin:0}
+    .toc{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .toc button{
+      text-align:left;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.02);
+      color: var(--ink);
+      cursor:pointer;
+    }
+    .toc button:hover{box-shadow: var(--shadow2); background: rgba(37,99,235,.06)}
+    .toc small{display:block; color: var(--muted); margin-top:4px}
+
+    /* Print */
+    @media print{
+      body{overflow:visible; background:#fff}
+      header,.progress{display:none !important}
+      main{padding:0}
+      .deck{display:block; padding:0}
+      .slide{
+        display:block !important;
+        width: 100%;
+        height: auto;
+        page-break-after: always;
+        box-shadow:none;
+        border: 1px solid #ddd;
+      }
+      .hints{display:none}
+      .slide::before,.slide::after{display:none}
+    }
+
+    /* Mobile */
+    @media (max-width: 720px){
+      .slide{padding: 22px 20px; height: min(680px, 82vh)}
+      h1{font-size: 34px}
+      h2{font-size: 26px}
+      .sub, ul, .step{font-size: 16px}
+      .grid{grid-template-columns: 1fr}
+      header .left, header .right{min-width:auto}
+      .toc{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <span class="badge"><strong>AI 리터러시</strong> 30분 연수</span>
+      <span class="badge">대상: 중학교 정보 교원</span>
+    </div>
+
+    <div class="center">
+      <button class="btn" id="btnPrev" title="이전 (←)"><span class="k">←</span> 이전</button>
+      <button class="btn primary" id="btnToc" title="목차 (T)">목차 <span class="k">T</span></button>
+      <button class="btn" id="btnNext" title="다음 (→)"><span class="k">→</span> 다음</button>
+      <span class="pill">팁: 스페이스로도 넘겨요 <span class="k">Space</span></span>
+    </div>
+
+    <div class="right">
+      <span class="badge">진행: <strong id="slideCount">1</strong>/<span id="slideTotal">—</span></span>
+      <span class="badge">섹션 타이머: <strong id="timer">00:00</strong></span>
+      <button class="btn" id="btnPrint" title="인쇄/PDF (P)">인쇄/PDF <span class="k">P</span></button>
+    </div>
+  </header>
+
+  <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+
+  <main>
+    <div class="deck" id="deck">
+
+      <!-- Slide 1 -->
+      <section class="slide active" data-title="오프닝" data-time="2">
+        <div class="meta">
+          <span class="chip"><b>0:00–2:00</b> 오프닝</span>
+          <span class="chip">다음 세션: 코들(codle.io) 활용법(30분)</span>
+        </div>
+        <h1>왜 지금, AI 리터러시인가?</h1>
+        <p class="sub">AI를 <b>“쓰게 하는 수업”</b>이 아니라, 학생이 <b>“판단하며 쓰게 하는 수업”</b>이 필요합니다.</p>
+
+        <div class="two-col">
+          <div class="card">
+            <span class="tag">오늘 가져갈 3가지</span>
+            <ul>
+              <li>중학교에서 <b>AI 리터러시가 필요한 이유</b> (현장 문제 중심)</li>
+              <li>수업에 바로 쓰는 <b>핵심 프레임(체크리스트)</b></li>
+              <li>정보과 수업/평가에 <b>자연스럽게 연결하는 방법</b></li>
+            </ul>
+          </div>
+          <div class="card accent">
+            <span class="tag">오늘의 한 문장</span>
+            <div class="quote"><b>AI 시대의 정보 수업은 ‘생성’보다 ‘판단’이 핵심</b>입니다.</div>
+          </div>
+        </div>
+
+        <div class="hints">
+          <div class="left">
+            <span class="chip">키보드: <span class="k">←</span><span class="k">→</span> / <span class="k">Space</span></span>
+            <span class="chip">목차: <span class="k">T</span></span>
+          </div>
+          <div class="right">
+            <span class="chip">GitHub Pages 업로드용 단일 HTML</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 2 -->
+      <section class="slide" data-title="공감: 교실의 현실" data-time="5">
+        <div class="meta">
+          <span class="chip"><b>2:00–7:00</b> 공감</span>
+          <span class="chip">미니 설문(구두) 30초</span>
+        </div>
+        <h2>교실에서 이미 벌어지는 일</h2>
+        <p class="sub">짧게 손들기(또는 온라인 폴)로 분위기부터 맞춰볼게요 🙂</p>
+
+        <div class="grid">
+          <div class="card">
+            <ul>
+              <li>숙제/보고서에서 <b>생성형 AI 흔적</b>을 본 적이 있다</li>
+              <li>AI 사용을 <b>막을지/허용할지 기준</b>이 없다</li>
+              <li><b>환각(그럴듯한 오류)</b> 때문에 지도/평가가 난감했다</li>
+            </ul>
+            <div class="quote">AI는 ‘도구’가 아니라 <b>정보 생산·유통 환경</b> 자체를 바꾼 변화입니다.</div>
+          </div>
+
+          <div class="card callout">
+            <h3 style="margin-top:0">전환 질문</h3>
+            <p class="sub" style="margin:0">
+              “AI를 쓰는 걸 금지하면 해결될까요?”<br/>
+              → <b>기준</b>과 <b>검증</b>, <b>책임 있는 사용</b>이 오히려 더 중요해집니다.
+            </p>
+            <div class="pills">
+              <span class="chip"><b>핵심</b> 신뢰성</span>
+              <span class="chip"><b>핵심</b> 윤리</span>
+              <span class="chip"><b>핵심</b> 문제해결</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 3 -->
+      <section class="slide" data-title="3분 데모: AI는 정답이 아니다" data-time="3">
+        <div class="meta">
+          <span class="chip"><b>7:00–10:00</b> 3분 데모</span>
+          <span class="chip">목표: “초안 ≠ 정답” 각인</span>
+        </div>
+        <h2>AI는 똑똑하지만, <u>정답 버튼</u>은 아니다</h2>
+        <p class="sub">직접 시연이 어려우면 <b>캡처 화면</b>으로 대체해도 OK</p>
+
+        <div class="two-col">
+          <div class="card">
+            <span class="tag">데모 시나리오</span>
+            <ul>
+              <li>“중학생 수준으로 <b>○○ 주제</b> 설명해줘”</li>
+              <li>“<b>출처</b>도 달아줘 (링크 포함)”</li>
+              <li>“핵심 개념 3개 + 예시 1개”</li>
+            </ul>
+          </div>
+          <div class="card danger">
+            <span class="tag">발견 포인트</span>
+            <ul>
+              <li>그럴듯한 문장인데 <b>사실 오류</b>가 섞일 수 있음</li>
+              <li>출처가 <b>부정확/허구</b>일 수 있음</li>
+              <li>결론: AI 결과물은 <b>검증 대상</b></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="quote"><b>한 줄 결론:</b> AI 출력물은 <b>‘초안’</b>이지 <b>‘정답’</b>이 아닙니다.</div>
+      </section>
+
+      <!-- Slide 4 -->
+      <section class="slide" data-title="정의: AI 리터러시 4가지" data-time="7">
+        <div class="meta">
+          <span class="chip"><b>10:00–17:00</b> 정의</span>
+          <span class="chip">수업으로 옮기기 쉬운 구조</span>
+        </div>
+        <h2>AI 리터러시 = 4가지 능력</h2>
+        <p class="sub">“AI를 쓰는 법”보다 “AI를 <b>판단하며</b> 쓰는 법”</p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>(A) 질문/지시(프롬프트) 설계</h3>
+            <ul>
+              <li>역할/형식/제약/예시로 <b>조건화</b>하기</li>
+              <li>“내가 평가할 기준”을 <b>요구조건</b>에 포함</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>(B) 검증(Verification)</h3>
+            <ul>
+              <li>최소 <b>2개 출처</b> 교차검증</li>
+              <li>수치/고유명사/인용은 <b>특히</b> 검증</li>
+              <li>“근거를 요구하고, 근거를 평가”</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>(C) 편향·한계 이해</h3>
+            <ul>
+              <li>특정 관점으로 <b>기울 수 있음</b></li>
+              <li>최신성/지역성/맥락에 <b>취약</b>할 수 있음</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>(D) 윤리·책임 있는 사용</h3>
+            <ul>
+              <li>개인정보/저작권/표절/출처표기</li>
+              <li>“사용 여부”보다 <b>사용 방식과 책임</b></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 5 -->
+      <section class="slide" data-title="교실 적용: AI 사용 6단계 루틴" data-time="8">
+        <div class="meta">
+          <span class="chip"><b>17:00–25:00</b> 교실 적용</span>
+          <span class="chip">실용 파트 (가져가기)</span>
+        </div>
+        <h2>AI 활용 수업 “6단계 루틴”</h2>
+        <p class="sub">학생이 따라 할 수 있게, 교사는 평가에 붙일 수 있게</p>
+
+        <div class="grid">
+          <div class="card">
+            <span class="tag">학생용 루틴</span>
+            <div class="steps">
+              <div class="step"><b>목표 정하기</b> — 내가 해결할 문제/학습목표는?</div>
+              <div class="step"><b>요구조건 쓰기</b> — 형식·분량·수준·금지조건</div>
+              <div class="step"><b>초안 생성</b> — AI로 초안 받기</div>
+              <div class="step"><b>검증하기</b> — 사실/출처/논리/수치 체크</div>
+              <div class="step"><b>개선하기</b> — 내 언어로 재구성, 근거 보강</div>
+              <div class="step"><b>제출 기준</b> — AI 사용표기, 참고자료, 내 기여도</div>
+            </div>
+          </div>
+
+          <div class="card callout">
+            <span class="tag">교사용 평가 체크리스트</span>
+            <ul>
+              <li>(과정) 프롬프트에 <b>목표/조건</b>이 있었나?</li>
+              <li>(검증) <b>교차검증 기록</b>이 남아 있나?</li>
+              <li>(산출) 학생의 <b>재구성 흔적</b>(편집/근거추가/오류수정)이 있나?</li>
+              <li>(윤리) <b>사용표기/출처/개인정보</b>를 준수했나?</li>
+            </ul>
+
+            <div class="quote"><b>팁:</b> 평가를 “결과물”이 아니라 <b>과정 로그</b> 중심으로 바꾸면, 부정행위 이슈가 크게 줄어듭니다.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 6 -->
+      <section class="slide" data-title="수업/평가 연결: 바로 쓰는 아이디어" data-time="4">
+        <div class="meta">
+          <span class="chip"><b>25:00–29:00</b> 수업·평가 연결</span>
+          <span class="chip">아이디어 3 + 평가 팁</span>
+        </div>
+        <h2>정보과 수업·평가에 붙이는 방법</h2>
+        <p class="sub">“AI를 쓰면 부정행위?” → “AI를 쓰되 <b>판단·검증·책임</b>을 평가”</p>
+
+        <div class="two-col">
+          <div class="card">
+            <span class="tag">수업 아이디어 3개</span>
+            <ul>
+              <li><b>팩트체크 실험</b>: AI 2개 답 비교 → 오류 유형 분류</li>
+              <li><b>프롬프트 리팩토링</b>: 나쁜 프롬프트 → 좋은 프롬프트 (전/후 비교)</li>
+              <li><b>근거 기반 글쓰기</b>: AI 초안 + 학생 검증/수정 로그로 평가</li>
+            </ul>
+          </div>
+          <div class="card accent">
+            <span class="tag">평가 설계 팁</span>
+            <ul>
+              <li>결과물 점수보다 <b>과정(프롬프트/검증/수정)</b> 비중을 높이기</li>
+              <li>“AI 사용표기”는 감점이 아니라 <b>정직성 기준</b>으로 운영</li>
+              <li>루브릭에 <b>검증 근거</b> 항목을 명시</li>
+            </ul>
+            <div class="pills">
+              <span class="chip"><b>추천 산출물</b> 프롬프트</span>
+              <span class="chip"><b>추천 산출물</b> 검증표</span>
+              <span class="chip"><b>추천 산출물</b> 수정 로그</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 7 -->
+      <section class="slide" data-title="마무리 & 코들 연결" data-time="1">
+        <div class="meta">
+          <span class="chip"><b>29:00–30:00</b> 마무리</span>
+          <span class="chip">코들(codle.io) 활용법으로 전환</span>
+        </div>
+        <h2>마무리: 오늘의 결론</h2>
+        <div class="quote"><b>AI 시대의 정보 수업은 ‘생성’보다 ‘판단’이 핵심</b>입니다.</div>
+
+        <div class="two-col" style="margin-top:18px">
+          <div class="card">
+            <span class="tag">전환 멘트(그대로 읽기)</span>
+            <p class="sub" style="margin:10px 0 0 0">
+              “이제 <b>판단하며 만들게 하는 수업</b>을 실제로 운영하기 위한 도구와 수업 흐름을<br/>
+              <b>코들(codle.io)</b>로 보여드리겠습니다.”
+            </p>
+          </div>
+          <div class="card callout">
+            <span class="tag">선택 배포(1장 자료)</span>
+            <ul>
+              <li>AI 활용 6단계 루틴</li>
+              <li>교사용 평가 체크리스트</li>
+              <li>AI 사용표기 예시 문장</li>
+            </ul>
+            <p style="margin:10px 0 0 0; color: var(--muted)">※ 이 페이지는 <b>인쇄/PDF</b>로 바로 배포 가능</p>
+          </div>
+        </div>
+
+        <div class="hints">
+          <div class="left">
+            <span class="chip">목차: <span class="k">T</span></span>
+            <span class="chip">처음으로: <span class="k">Home</span></span>
+          </div>
+          <div class="right">
+            <span class="chip">GitHub Pages에 올리면 링크로 공유/발표 가능</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- TOC Modal -->
+  <dialog id="toc">
+    <div class="modal-head">
+      <h3>목차</h3>
+      <button class="btn" id="btnClose">닫기 <span class="k">Esc</span></button>
+    </div>
+    <p style="margin:0 0 10px 0; color: var(--muted)">
+      항목을 클릭하면 해당 슬라이드로 이동합니다. (키보드 <span class="k">T</span>)
+    </p>
+    <div class="toc" id="tocList"></div>
+  </dialog>
+
+  <script>
+    (function(){
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const totalEl = document.getElementById('slideTotal');
+      const countEl = document.getElementById('slideCount');
+      const bar = document.getElementById('bar');
+      const timerEl = document.getElementById('timer');
+
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+      const btnToc = document.getElementById('btnToc');
+      const btnPrint = document.getElementById('btnPrint');
+
+      const toc = document.getElementById('toc');
+      const btnClose = document.getElementById('btnClose');
+      const tocList = document.getElementById('tocList');
+
+      totalEl.textContent = slides.length;
+
+      // Build TOC
+      slides.forEach((s, i) => {
+        const title = s.dataset.title || `슬라이드 ${i+1}`;
+        const time = s.dataset.time ? `${s.dataset.time}분` : '';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.innerHTML = `<b>${i+1}. ${title}</b><small>${time}</small>`;
+        btn.addEventListener('click', () => {
+          go(i);
+          toc.close();
+        });
+        tocList.appendChild(btn);
+      });
+
+      // State
+      let idx = 0;
+      let timerStart = performance.now();
+
+      function setActive(i){
+        slides.forEach((s, j) => s.classList.toggle('active', j === i));
+        idx = i;
+        countEl.textContent = (idx + 1);
+        const pct = ((idx) / (slides.length - 1)) * 100;
+        bar.style.width = `${isFinite(pct) ? pct : 0}%`;
+
+        // update hash
+        history.replaceState(null, '', `#${idx+1}`);
+
+        // reset section timer
+        timerStart = performance.now();
+        renderTimer(0);
+      }
+
+      function go(i){
+        const next = Math.max(0, Math.min(slides.length - 1, i));
+        setActive(next);
+      }
+
+      function next(){ go(idx + 1); }
+      function prev(){ go(idx - 1); }
+
+      btnNext.addEventListener('click', next);
+      btnPrev.addEventListener('click', prev);
+
+      btnToc.addEventListener('click', () => toc.showModal());
+      btnClose.addEventListener('click', () => toc.close());
+      toc.addEventListener('click', (e) => {
+        const rect = toc.getBoundingClientRect();
+        const inDialog = rect.top <= e.clientY && e.clientY <= rect.bottom &&
+                         rect.left <= e.clientX && e.clientX <= rect.right;
+        if (!inDialog) toc.close();
+      });
+
+      btnPrint.addEventListener('click', () => window.print());
+
+      function renderTimer(ms){
+        const sec = Math.floor(ms/1000);
+        const m = String(Math.floor(sec/60)).padStart(2,'0');
+        const s = String(sec%60).padStart(2,'0');
+        timerEl.textContent = `${m}:${s}`;
+      }
+
+      function tick(){
+        renderTimer(performance.now() - timerStart);
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      window.addEventListener('keydown', (e) => {
+        if (toc.open){
+          if (e.key === 'Escape') toc.close();
+          return;
+        }
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' '){
+          e.preventDefault(); next();
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'PageUp'){
+          e.preventDefault(); prev();
+        }
+        if (e.key === 'Home'){ e.preventDefault(); go(0); }
+        if (e.key === 'End'){ e.preventDefault(); go(slides.length-1); }
+        if (e.key.toLowerCase() === 't'){ e.preventDefault(); toc.showModal(); }
+        if (e.key.toLowerCase() === 'p'){ e.preventDefault(); window.print(); }
+      });
+
+      // Touch swipe
+      let touchX = null;
+      window.addEventListener('touchstart', (e) => {
+        touchX = e.changedTouches[0].clientX;
+      }, {passive:true});
+      window.addEventListener('touchend', (e) => {
+        if (touchX === null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 60){
+          if (dx < 0) next();
+          else prev();
+        }
+        touchX = null;
+      }, {passive:true});
+
+      function fromHash(){
+        const n = parseInt(location.hash.replace('#',''), 10);
+        if (!Number.isNaN(n) && n >= 1 && n <= slides.length) go(n-1);
+        else go(0);
+      }
+      window.addEventListener('hashchange', fromHash);
+      fromHash();
+    })();
+  </script>
+</body>
+</html>
